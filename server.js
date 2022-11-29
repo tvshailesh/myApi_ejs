@@ -6,22 +6,16 @@ const app = express();
 var parseUrl = require("body-parser");
 
 const connection = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "myapi_crud",
+  host: process.env.MYSQL_HOST,
+  user: process.env.MYSQL_USER,
+  password:process.env.MYSQL_PASSWORD,
+  database: process.env.MYSQL_DATABASE,
 });
 
 connection.connect(function (error) {
   if (!!error) console.log(error);
   else console.log("Database connected!");
 });
-// view engine setup
-// app.set("view engine", "ejs");
-// app.use(express.static("views"));
-// app.set("views", path.join(__filename, "views"));
-// app.set('views', path.join(__dirname, 'views'))
-// app.set('view engine', 'ejs')
 app.use(parseUrl.json());
 app.use(parseUrl.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
@@ -39,25 +33,6 @@ app.get("/", (req, res) => {
 
 app.post("/formFillUp", (req, res) => {
   const { first_name, last_name, age, city, phone_no, email, password  } = req.body;
-  // connection.query('SELECT email FROM users WHERE email = ?', [email], async (error, result) => {
-  //     if(error){
-  //         console.log(error)
-  //     }
-
-  //     // if( result.length > 0 ) {
-  //     //     return res.render('signup', {
-  //     //         message: 'This email is already in use'
-  //     //     })
-  //     // } else if(password !== password) {
-  //     //     return res.render('signup', {
-  //     //         message: 'This email is already in use'
-  //     //     })
-  //     // }
-
-  //     // let hashedPassword = await bcrypt.hash(password, 8)
-
-  //     // console.log(hashedPassword)
-  console.log("@@@@@", first_name, last_name, email, password);
   if (first_name == "" || last_name == "" || age == "" || city == "" || phone_no == "" || email == "" || password == "") {
     console.log("Please fill form");
     //  res.render("signup.ejs");
@@ -85,6 +60,8 @@ app.post("/formFillUp", (req, res) => {
 });
 
 //server Listing
-app.listen(3000, () => {
-  console.log("Server is Running at port 3000");
-});
+const PORT = process.env.PORT ;
+app.listen(PORT, () => {
+ console.log( `Server started on port ${PORT}`)
+  });
+  
