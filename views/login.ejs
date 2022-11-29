@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,
+        initial-scale=1, shrink-to-fit=no"
+    />
+
+    <!-- Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="./style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <div class="container mt-3">
+      <br />
+      <h1>Login</h1>
+      <br />
+      <form action="/login" method="post">
+        <div class="form-row">
+          <div clas="form-group">
+            <label for="Email" style="font-size: 23px"> Email</label>
+            <input type="text" class="form-control" id="email" name="email" />
+          </div>
+          <br />
+          <div class="form-group">
+            <label for="password" style="font-size: 23px"> password </label>
+            <input
+              type="text"
+              class="form-control"
+              id="password"
+              name="password"
+            />
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Login</button>
+      </form>
+    </div>
+  </body>
+</html>

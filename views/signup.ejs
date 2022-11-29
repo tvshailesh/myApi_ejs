@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,
+        initial-scale=1, shrink-to-fit=no"
+    />
+
+    <!-- Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+    <!-- <link rel="stylesheet" href="./style.css" /> -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+    <script>
+      function validate() {
+        var validate = true;
+        var form = $("#myform");
+        var fname = $("#fname").val();
+        var lname = $("#lname").val();
+        var age = $("#age").val();
+        var city = $("#city").val();
+        var phone_no = $("#phone_no").val();
+        var email = $("#email").val();
+        var password = $("#password").val();
+
+        if (fname == "") {
+          $("#first_name_check").show();
+          validate = false;
+        } else {
+          $("#first_name_check").hide();
+        }
+        if (lname == "") {
+          $("#last_name_check").show();
+          validate = false;
+        } else {
+          $("#last_name_check").hide();
+        }
+        if (age == "select age") {
+          $("#Age_check").show();
+          validate = false;
+        } else {
+          $("#Age_check").hide();
+        }
+        // //city
+        if (city == "") {
+          $("#City_check").show();
+          validate = false;
+        } else {
+          $("#City_check").hide();
+        }
+        //phone no
+        let regex_mob =  /^[0]?[789]\d{9}$/;
+        // if (phone_no.length != 10) {
+        //   $("#phone_no_check").show();
+        //   validate = false;
+        // } else {
+        //   $("#phone_no_check").hide();
+        // }
+        if(regex_mob.test(phone_no)){
+          $("#phone_no_check").show();
+          validate = false;
+        } else {
+          $("#phone_no_check").hide();
+        }
+        //email
+        let regex =
+          /^([_\-\.0-9a-zA-Z]+)@([_\-\.0-9a-zA-Z]+)\.([a-zA-Z]){2,7}$/;
+        let s = email.value;
+        if (email == "") {
+          $("#email_check").show();
+          validate = false;
+        } else if (regex.test(s)) {
+          $("#email_check").show();
+          validate = false;
+        } else {
+          $("#email_check").hide();
+        }
+        //password
+        let regex_p =/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
+        let p = password.value;
+        if (password == "") {
+          $("#password_check").show();
+          validate = false;
+        } else if (regex_p.test(p)) {
+          alert("call pass");
+          $("#password_check").show();
+          validate = false;
+        } else {
+          $("#password_check").hide();
+        }
+        if (validate == false) {
+          alert("form failed");
+        } else {
+          // form.submit();
+        }
+        // return validate;
+      }
+    </script>
+  </head>
+
+  <body>
+    <div class="container mt-3">
+      <br />
+      <h1>Register Form</h1>
+      <br />
+      <form action="/formFillUp" method="post" id="myform">
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="fname" style="font-size: 23px"> First Name</label>
+            <input
+              type="text"
+              class="form-control"
+              id="fname"
+              name="first_name"
+            />
+            <!-- <h5 id="first_name_check" style="color: red">first_name is missing</h5> -->
+            <small
+              id="first_name_check"
+              name="first_name_check"
+              class="form-text text-muted invalid-feedback"
+              value="first_name is missing"
+            >
+              first_name is missing
+            </small>
+          </div>
+
+          <div class="form-group col-md-6">
+            <label for="lname" style="font-size: 23px"> Last Name </label>
+            <input
+              type="text"
+              class="form-control"
+              id="lname"
+              name="last_name"
+            />
+            <!-- <h5 id="last_name_check" style="color: red">last_name is missing</h5> -->
+            <small
+              id="last_name_check"
+              name="last_name_check"
+              class="form-text text-muted invalid-feedback"
+            >
+              last_name is missing
+            </small>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="age" style="font-size: 23px">Age</label>
+            <select
+              name="age"
+              id="age"
+              class="form-group form-control col-md-12"
+            >
+              <option value="select age">select age</option>
+              <option value="18">18</option>
+              <option value="19">19</option>
+              <option value="20">20</option>
+              <option value="21">21</option>
+            </select>
+            <small
+              id="Age_check"
+              name="Age_check"
+              class="form-text text-muted invalid-feedback"
+            >
+              Please Select Age
+            </small>
+          </div>
+
+          <div class="form-group col-md-6">
+            <label for="inputCity" style="font-size: 23px">City </label>
+            <input type="text" class="form-control" id="city" name="city" />
+            <small
+              id="City_check"
+              class="form-text text-muted invalid-feedback"
+            >
+              Please Add City
+            </small>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="inputphone" style="font-size: 23px">Phone_no</label>
+            <input
+              type="text"
+              class="form-control"
+              id="phone_no"
+              name="phone_no"
+            />
+            <small
+              id="phone_no_check"
+              class="form-text text-muted invalid-feedback"
+            >
+              Please enter validate Number
+            </small>
+          </div>
+          <div class="form-group col-md-6">
+            <label for="inputEmail" style="font-size: 23px"> Email</label>
+            <input type="email" class="form-control" id="email" name="email" />
+            <small
+              id="email_check"
+              name="email"
+              class="form-text text-muted invalid-feedback"
+            >
+              Your email must be a valid email
+            </small>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="password" style="font-size: 23px">Password</label>
+          <input
+            type="password"
+            class="form-control"
+            id="password"
+            name="password"
+          />
+          <small
+            id="password_check"
+            name="password_check"
+            class="form-text text-muted invalid-feedback"
+          >
+            **Please Fill the password
+          </small>
+        </div>
+        <button class="btn btn-primary" onclick="validate()">Submit</button>
+      </form>
+    </div>
+  </body>
+</html>
