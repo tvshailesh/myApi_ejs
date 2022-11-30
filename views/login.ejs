@@ -28,21 +28,37 @@
       <br />
       <h1>Login</h1>
       <br />
-      <form action="/login" method="post">
+      <form action="/authentication" method="post">
         <div class="form-row">
           <div clas="form-group">
             <label for="Email" style="font-size: 23px"> Email</label>
             <input type="text" class="form-control" id="email" name="email" />
+            <small
+              id="email_check"
+              name="email_check"
+              class="form-text text-muted invalid-feedback"
+              value="Please Enter valid Email"
+            >
+              Please Enter Valid Email
+            </small>
           </div>
           <br />
           <div class="form-group">
             <label for="password" style="font-size: 23px"> password </label>
             <input
-              type="text"
+              type="password"
               class="form-control"
               id="password"
               name="password"
             />
+            <small
+              id="password_check"
+              name="password_check"
+              class="form-text text-muted invalid-feedback"
+              value="Please Enter valid Password"
+            >
+              please Enter Valid Password
+            </small>
           </div>
         </div>
 
