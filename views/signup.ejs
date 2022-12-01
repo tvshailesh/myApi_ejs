@@ -98,11 +98,11 @@
         let regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
         // let regex =
         //   /^([_\-\.0-9a-zA-Z]+)@([_\-\.0-9a-zA-Z]+)\.([a-zA-Z]){2,7}$/;
-        let s = email.value;
-        if (!email) {
+        // let s = email.value;
+        if (email == "") {
           $("#email_check").show();
           validate = false;
-        } else if (regex.match(s)) {
+        } else if (regex.match(email)) {
           $("#email_check").show();
           validate = false;
         } else {
@@ -232,7 +232,7 @@
           </div>
           <div class="form-group col-md-6">
             <label for="email" style="font-size: 23px"> Email</label>
-            <input type="email" class="form-control" id="email" />
+            <input type="text" class="form-control" id="email" name="email" />
             <small
               id="email_check"
               name="email"

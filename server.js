@@ -1,19 +1,25 @@
 const path = require("path");
 const express = require("express");
-const session = require('express-session');
+const session = require("express-session");
 const ejs = require("ejs");
 const mysql = require("mysql");
 const app = express();
 var parseUrl = require("body-parser");
 var connection = require("./connection/Db");
 
-
-app.use(session({
-	secret: 'secret',
-	resave: true,
-	saveUninitialized: true,
-  cookie:{maxAge:6000}
-}));
+app.use(
+  session({
+    secret: "secret",
+    resave: true,
+    saveUninitialized: true,
+    cookie: {
+      path: "/",
+      httpOnly: true,
+      secure: false,
+      maxAge: 6000,
+    },
+  })
+);
 app.use(parseUrl.json());
 app.use(parseUrl.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
@@ -65,56 +71,79 @@ app.post("/formFillUp", (req, res) => {
       },
       (err, req) => {
         if (err) {
-          console.log("error occured",err);
+          console.log("error occured", err);
         } else {
-          res.render("formsubmit.ejs");
+          res.redirect("/login");
         }
       }
     );
+    console.log("Query", Query.values);
   }
 });
 
 //login
 app.post("/authentication", (req, res, next) => {
-  var email = req.body.email;
-  var password = req.body.password;
-  if (email && password) {
-		connection.query('SELECT * FROM users WHERE email = ? AND password = ?', [email, password], function(error, rows, fields) {
-			if (error) throw error;
-			// If the account exists
-			if (rows.length > 0) {
-				// Authenticate the user
-				req.session.loggedin = true;
-				req.session.email = email;
-				// Redirect to home page
-				res.render("Dashboard.ejs", {
-          title: "Welcome To Dashboard",
-          users: rows,
-        });
-			} else {
-				res.send('Incorrect email and/or Password!');
-			}			
-			res.end();
-		});
-	} else {
-		res.send('Please enter email and Password!');
-		res.end();
-	}
-     
-});
+  var { email, password } = req.body;
 
-//logout
-app.get('/logout',  function (req, res, next)  {
-  // If the user is loggedin
-  if (req.session.loggedin) {
-        req.session.loggedin = false;
-        res.redirect('/');
-  }else{
-      // Not logged in
-      res.redirect('/login');
+  if (email) {
+    connection.query(
+      "SELECT * FROM users WHERE email = ? ",
+      [email],
+      function (error, resu, fields) {
+        if (error) throw error;
+        // If the account exists
+        console.log("response",resu);
+       var data = resu.find(e =>e.password == password)
+        if (!data){
+          res.send("Incorrect  Password!");
+        } else {
+        console.log("else call------>>>");
+          connection.query("SELECT * From users"),
+            (err, rows) => {
+              if (err) throw err;
+              console.log("@@@@@", err);
+              console.log("reows",rows);
+              req.session.loggedin = true;
+              req.session.email = email;
+              // Redirect to home page
+              res.render("Dashboard.ejs", {
+                title: "Welcome To Dashboard",
+                users: rows,
+              });
+            };
+        }
+        // if (rows.length > 0) {
+        //   // Authenticate the user
+        //   req.session.loggedin = true;
+        //   req.session.email = email;
+        //   // Redirect to home page
+        //   res.render("Dashboard.ejs", {
+        //     title: "Welcome To Dashboard",
+        //     users: rows,
+        //   });
+        // } else {
+        //   res.send("Incorrect email and/or Password!");
+        // }
+        res.end();
+      }
+    );
+  } else {
+    res.send("Please enter email and Password!");
+    res.end();
   }
 });
 
+//logout
+app.get("/logout", function (req, res, next) {
+  // If the user is loggedin
+  if (req.session.loggedin) {
+    req.session.loggedin = false;
+    res.redirect("/login");
+  } else {
+    // Not logged in
+    res.redirect("/");
+  }
+});
 
 //server Listing
 const PORT = process.env.PORT;
