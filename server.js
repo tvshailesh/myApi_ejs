@@ -69,7 +69,8 @@ app.post("/formFillUp", (req, res) => {
         email: email,
         password: password,
       },
-      (err, req) => {
+      (err, req, result) => {
+        console.log("request=-=-=-=-=-=-=-",result)
         if (err) {
           console.log("error occured", err);
         } else {
@@ -84,6 +85,12 @@ app.post("/formFillUp", (req, res) => {
 //login
 app.post("/authentication", (req, res, next) => {
   var { email, password } = req.body;
+  var allData;
+  connection.query("SELECT * FROM users", function (err, result, fields) {
+    if (err) throw err;
+    console.log("reows==================", result);
+    allData = result;
+  });
 
   if (email) {
     connection.query(
@@ -92,38 +99,18 @@ app.post("/authentication", (req, res, next) => {
       function (error, resu, fields) {
         if (error) throw error;
         // If the account exists
-        console.log("response",resu);
-       var data = resu.find(e =>e.password == password)
-        if (!data){
+        console.log("response", resu);
+        var data = resu.find((e) => e.password == password);
+
+        if (!data) {
           res.send("Incorrect  Password!");
         } else {
-        console.log("else call------>>>");
-          connection.query("SELECT * From users"),
-            (err, rows) => {
-              if (err) throw err;
-              console.log("@@@@@", err);
-              console.log("reows",rows);
-              req.session.loggedin = true;
-              req.session.email = email;
-              // Redirect to home page
-              res.render("Dashboard.ejs", {
-                title: "Welcome To Dashboard",
-                users: rows,
-              });
-            };
+          console.log("else call------>>>",allData);
+          res.render("Dashboard.ejs", {
+              title: "Welcome To Dashboard",
+              users: allData,
+            });
         }
-        // if (rows.length > 0) {
-        //   // Authenticate the user
-        //   req.session.loggedin = true;
-        //   req.session.email = email;
-        //   // Redirect to home page
-        //   res.render("Dashboard.ejs", {
-        //     title: "Welcome To Dashboard",
-        //     users: rows,
-        //   });
-        // } else {
-        //   res.send("Incorrect email and/or Password!");
-        // }
         res.end();
       }
     );
@@ -136,16 +123,9 @@ app.post("/authentication", (req, res, next) => {
 //logout
 app.get("/logout", function (req, res, next) {
   // If the user is loggedin
-  if (req.session.loggedin) {
-    req.session.loggedin = false;
-    res.redirect("/login");
-  } else {
-    // Not logged in
-    res.redirect("/");
-  }
+  res.redirect("/login");
 });
 
-//server Listing
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);

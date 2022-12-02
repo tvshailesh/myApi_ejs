@@ -112,12 +112,11 @@
         $("#password").keyup(function () {
           $("#password_check").hide();
         });
-        let regex_p = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
-        let p = password.value;
+        let regex_p = /^(?=.*\d)(?=.*[a-zA-Z])[a-zA-Z0-9]{7,}$/;
         if (password == "") {
           $("#password_check").show();
           validate = false;
-        } else if (regex_p.test(p)) {
+        } else if (regex_p.match(password)) {
           alert("call pass");
           $("#password_check").show();
           validate = false;
