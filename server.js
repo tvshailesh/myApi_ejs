@@ -70,7 +70,7 @@ app.post("/formFillUp", (req, res) => {
         password: password,
       },
       (err, req, result) => {
-        console.log("request=-=-=-=-=-=-=-",result)
+        console.log("request=-=-=-=-=-=-=-", result);
         if (err) {
           console.log("error occured", err);
         } else {
@@ -105,11 +105,11 @@ app.post("/authentication", (req, res, next) => {
         if (!data) {
           res.send("Incorrect  Password!");
         } else {
-          console.log("else call------>>>",allData);
+          console.log("else call------>>>", allData);
           res.render("Dashboard.ejs", {
-              title: "Welcome To Dashboard",
-              users: allData,
-            });
+            title: "Welcome To Dashboard",
+            users: allData,
+          });
         }
         res.end();
       }
@@ -118,6 +118,54 @@ app.post("/authentication", (req, res, next) => {
     res.send("Please enter email and Password!");
     res.end();
   }
+});
+
+// user edit
+app.get("/user_edit/:userId", (req, res) => {
+  const userId = req.params.userId;
+  console.log("$$$$$$$", userId);
+  let sql = `Select * from users where id = ${userId}`;
+  let query = connection.query(sql, (err, result) => {
+    if (err) throw err;
+    res.render("user_edit.ejs", {
+      title: "Edit my Data",
+      user: result[0],
+    });
+  });
+});
+
+// update
+app.post("/update", (req, res) => {
+  const userId = req.body.id;
+  let sql =
+    "UPDATE users SET first_name=" +
+    req.body.first_name +
+    ", last_name=" +
+    req.body.last_name +
+    ", age=" +
+    req.body.age +
+    ",city=" +
+    req.body.city +
+    ", phone_no=" +
+    req.body.phone_no +
+    ", email=" +
+    req.body.email +
+    " where id =" +
+    userId;
+  let query = connection.query(sql, (err, results) => {
+    if (err) throw err;
+    res.render("Dashboard.ejs");
+  });
+});
+
+// delete User
+app.get("/delete/:userId", (req, res) => {
+  const userId = req.params.userId;
+  let sql = `DELETE from users where id = ${userId}`;
+  let query = connection.query(sql, (err, result) => {
+    if (err) throw err;
+    res.redirect("/Dashboard");
+  });
 });
 
 //logout
