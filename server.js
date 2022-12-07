@@ -88,7 +88,6 @@ app.post("/authentication", (req, res, next) => {
   var allData;
   connection.query("SELECT * FROM users", function (err, result, fields) {
     if (err) throw err;
-    console.log("reows==================", result);
     allData = result;
   });
 
@@ -136,35 +135,56 @@ app.get("/user_edit/:userId", (req, res) => {
 
 // update
 app.post("/update", (req, res) => {
-  const userId = req.body.id;
-  let sql =
-    "UPDATE users SET first_name=" +
-    req.body.first_name +
-    ", last_name=" +
-    req.body.last_name +
-    ", age=" +
-    req.body.age +
-    ",city=" +
-    req.body.city +
-    ", phone_no=" +
-    req.body.phone_no +
-    ", email=" +
-    req.body.email +
-    " where id =" +
-    userId;
+  const { first_name, last_name, age, city, phone_no, email, id } = req.body;
+  var allUpdateData;
+  let sql = `UPDATE users SET first_name = '${first_name}' , last_name = '${last_name}' , age = '${age}' , city = '${city}' , phone_no = '${phone_no}'  WHERE id = '${id}' ;`; //,[ req.body.first_name, req.body.last_name, req.body.age, req.body.city,  req.body.phone_no, req.body.email, req.body.id]
   let query = connection.query(sql, (err, results) => {
     if (err) throw err;
-    res.render("Dashboard.ejs");
+
+    connection.query("SELECT * FROM users", function (err, result, fields) {
+      if (err) throw err;
+      console.log("Updated Data==================", result);
+      // allUpdateData = result;
+      res.render("Dashboard.ejs", {
+        title: "Updated",
+        users: result,
+      });
+    });
+    console.log("!!!!!!!", allUpdateData);
   });
 });
 
-// delete User
-app.get("/delete/:userId", (req, res) => {
+//Delete id
+app.get("/user_delete.ejs/:userId", (req, res) => {
   const userId = req.params.userId;
-  let sql = `DELETE from users where id = ${userId}`;
+  console.log("Delete id", userId);
+  let sql = `Select * from users where id = ${userId}`;
+  let query = connection.query(sql, (err, result) => {
+    console.log("Delete Result", result);
+    if (err) throw err;
+    res.render("user_delete.ejs", {
+      title: "Delete This Record",
+      user: result[0],
+    });
+  });
+});
+// delete User
+app.post("/delete", (req, res) => {
+  const { id } = req.body;
+  let sql = `DELETE from users where id = ${id}`;
   let query = connection.query(sql, (err, result) => {
     if (err) throw err;
-    res.redirect("/Dashboard");
+    // res.render("delete.ejs");
+    connection.query("SELECT * FROM users", function (err, result, fields) {
+      if (err) throw err;
+      console.log("Deleted Data ==================", result);
+      // allUpdateData = result;
+      res.render("Dashboard.ejs", {
+        title: "Welcome to Dashboard",
+        users: result,
+      });
+    });
+    // res.send("Record Deleted");
   });
 });
 
