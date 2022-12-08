@@ -22,7 +22,6 @@
       rel="stylesheet"
     />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-
     <script>
       function validate() {
         var validate = true;
@@ -85,20 +84,11 @@
         } else {
           $("#phone_no_check").hide();
         }
-        // if(regex_mob.test(phone_no)){
-        //   $("#phone_no_check").show();
-        //   validate = false;
-        // } else {
-        //   $("#phone_no_check").hide();
-        // }
         //email
         $("#email").keyup(function () {
           $("#email_check").hide();
         });
         let regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-        // let regex =
-        //   /^([_\-\.0-9a-zA-Z]+)@([_\-\.0-9a-zA-Z]+)\.([a-zA-Z]){2,7}$/;
-        // let s = email.value;
         if (email == "") {
           $("#email_check").show();
           validate = false;
@@ -200,7 +190,6 @@
               Please Select Age
             </small>
           </div>
-
           <div class="form-group col-md-6">
             <label for="City" style="font-size: 23px">City </label>
             <input type="text" class="form-control" id="city" name="city" />
@@ -212,7 +201,6 @@
             </small>
           </div>
         </div>
-
         <div class="form-row">
           <div class="form-group col-md-6">
             <label for="phone" style="font-size: 23px">Phone_no</label>

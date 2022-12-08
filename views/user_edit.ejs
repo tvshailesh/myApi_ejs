@@ -29,6 +29,13 @@
     ></script>
     <script src="https://cdn.datatables.net/1.12.0/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.12.0/js/dataTables.bootstrap5.min.js"></script>
+    <script> function ModalClose() {
+      var myModal = new bootstrap.Modal(document.getElementById('action_modal'), {
+        keyboard: false
+      })
+      window.location.replace('/views/Dashboard.ejs');
+      myModal.hide();
+    }</script>
     <title></title>
   </head>
   <body>
@@ -51,6 +58,7 @@
             class="btn-close"
             data-bs-dismiss="modal"
             aria-label="Close"
+            onclick="ModalClose()"
           ></button>
         </div>
         <div class="modal-body">
@@ -100,7 +108,7 @@
         <div class="modal-footer">
            <input type="hidden" name="id" id="id" value="<%= user.id %>"/>
           <!-- <input type="hidden" name="action" id="action" value="/update" /> --> 
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="ModalClose()">Close</button>
           <button type="submit" class="btn btn-primary" >
             Edit
           </button>

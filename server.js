@@ -3,6 +3,7 @@ const express = require("express");
 const session = require("express-session");
 const ejs = require("ejs");
 const mysql = require("mysql");
+const bcrypt = require("bcrypt");
 const app = express();
 var parseUrl = require("body-parser");
 var connection = require("./connection/Db");
@@ -33,7 +34,7 @@ app.use(express.json());
 app.get("/", (req, res) => {
   res.render("signup.ejs");
 });
-
+2;
 //display login page
 app.get("/login", function (req, res, next) {
   res.render("login.ejs", {
@@ -43,9 +44,18 @@ app.get("/login", function (req, res, next) {
   });
 });
 
-app.post("/formFillUp", (req, res) => {
-  const { first_name, last_name, age, city, phone_no, email, password } =
-    req.body;
+// signup page
+app.post("/formFillUp", async (req, res) => {
+  const salt = await bcrypt.genSalt(10);
+  const { first_name, last_name, age, city, phone_no, email } = req.body;
+  const password = await bcrypt.hash(req.body.password, salt);
+  var allRegisterdData;
+  connection.query("SELECT * FROM users", function (err, result, fields) {
+    if (err) throw err;
+    allRegisterdData = result[0].email;
+    console.log("All Data", allRegisterdData);
+  });
+
   if (
     first_name == "" ||
     last_name == "" ||
@@ -58,31 +68,41 @@ app.post("/formFillUp", (req, res) => {
     console.log("Please fill form");
     //  res.render("signup.ejs");
   } else {
-    let Query = connection.query(
-      "INSERT INTO users SET?",
-      {
-        first_name: first_name,
-        last_name: last_name,
-        age: age,
-        city: city,
-        phone_no: phone_no,
-        email: email,
-        password: password,
-      },
-      (err, req, result) => {
-        console.log("request=-=-=-=-=-=-=-", result);
-        if (err) {
-          console.log("error occured", err);
+    let Query1 = connection.query(
+      "SELECT * FROM users WHERE email = ? ",
+      [email],
+      function (error, resu, fields) {
+        if (error) throw error;
+        if (resu.length > 0) {
+          res.send("Email already Exist");
         } else {
-          res.redirect("/login");
+          connection.query(
+            "INSERT INTO users SET?",
+            {
+              first_name: first_name,
+              last_name: last_name,
+              age: age,
+              city: city,
+              phone_no: phone_no,
+              email: email,
+              password: password,
+            },
+            (err, req, result) => {
+              console.log("request=-=-=-=-=-=-=-", result);
+              if (err) {
+                console.log("error occured", err);
+              } else {
+                res.redirect("/login");
+              }
+            }
+          );
         }
       }
     );
-    console.log("Query", Query.values);
   }
 });
 
-//login
+//login Auth
 app.post("/authentication", (req, res, next) => {
   var { email, password } = req.body;
   var allData;
@@ -90,27 +110,23 @@ app.post("/authentication", (req, res, next) => {
     if (err) throw err;
     allData = result;
   });
-
   if (email) {
     connection.query(
       "SELECT * FROM users WHERE email = ? ",
       [email],
       function (error, resu, fields) {
         if (error) throw error;
-        // If the account exists
-        console.log("response", resu);
-        var data = resu.find((e) => e.password == password);
-
-        if (!data) {
-          res.send("Incorrect  Password!");
-        } else {
-          console.log("else call------>>>", allData);
-          res.render("Dashboard.ejs", {
-            title: "Welcome To Dashboard",
-            users: allData,
-          });
-        }
-        res.end();
+        bcrypt.compare(password, resu[0].password, function (err, result) {
+          // console.log("@#@#@@$$#$$", result);
+          if (result) {
+            res.render("Dashboard.ejs", {
+              title: "Welcome To Dashboard",
+              users: allData,
+            });
+          } else {
+            console.log("Invalid password!");
+          }
+        });
       }
     );
   } else {
@@ -140,17 +156,16 @@ app.post("/update", (req, res) => {
   let sql = `UPDATE users SET first_name = '${first_name}' , last_name = '${last_name}' , age = '${age}' , city = '${city}' , phone_no = '${phone_no}'  WHERE id = '${id}' ;`; //,[ req.body.first_name, req.body.last_name, req.body.age, req.body.city,  req.body.phone_no, req.body.email, req.body.id]
   let query = connection.query(sql, (err, results) => {
     if (err) throw err;
-
     connection.query("SELECT * FROM users", function (err, result, fields) {
       if (err) throw err;
-      console.log("Updated Data==================", result);
+      // console.log("Updated Data==================", result);
       // allUpdateData = result;
       res.render("Dashboard.ejs", {
         title: "Updated",
         users: result,
       });
     });
-    console.log("!!!!!!!", allUpdateData);
+    // console.log("!!!!!!!", allUpdateData);
   });
 });
 
@@ -177,8 +192,6 @@ app.post("/delete", (req, res) => {
     // res.render("delete.ejs");
     connection.query("SELECT * FROM users", function (err, result, fields) {
       if (err) throw err;
-      console.log("Deleted Data ==================", result);
-      // allUpdateData = result;
       res.render("Dashboard.ejs", {
         title: "Welcome to Dashboard",
         users: result,
@@ -187,12 +200,20 @@ app.post("/delete", (req, res) => {
     // res.send("Record Deleted");
   });
 });
-
 //logout
 app.get("/logout", function (req, res, next) {
-  // If the user is loggedin
   res.redirect("/login");
 });
+
+app.get("/views/Dashboard.ejs", (req, res) => {
+    connection.query("SELECT * FROM users", function (err, result, fields) {
+      if (err) throw err;
+      res.render("Dashboard.ejs", {
+        title: "Welcome to Dashboard",
+        users: result,
+      });
+    });
+  });
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {

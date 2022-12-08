@@ -1,5 +1,4 @@
 <html lang="en">
-
 <head>
   <title>
     <%= title %>
@@ -17,10 +16,8 @@
         keyboard: false
       })
       var modalToggle = document.getElementById('DeleteModal') // deleteapi
-
       if (form.ariaHidden === 'true') {
         myModal.show(modalToggle)
-        console.log("form -----> ")
         form.ariaHidden = 'false';
       } else {
         form.ariaHidden = 'true';
@@ -89,33 +86,6 @@
           <% }); %>
       </tbody>
     </table>
-    <!-- Modal -->
-    <% users.forEach(function(item){ %>
-      <div class="modal fade" id="DeleteModal" tabindex="-1" aria-labelledby="DeleteModal" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="DeleteModal">Modal title</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" id="Closebtn" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              <form class="form-control" action="/delete/<%= item.id %>" method="get">
-                <p>Are you sure you want to delete ? </p>
-                <p>***********</p>
-                <button type="submit" class="btn btn-outline-danger" name="deleteButton"
-                  value="/delete<%= item.id %>">yes</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
-              </form>
-            </div>
-            <div class="modal-footer">
-              <p>Press "yes" to Confirm Delete </p>
-            </div>
-          </div>
-        </div>
-      </div>
-      <% }); %>
-
-        <!-- <button class="btn btn-primary"><a(href="/logout")>logout</a></button> -->
         <a href="/logout">logout</a>
 </body>
 <script src="/js/autoLogout.js"></script>
